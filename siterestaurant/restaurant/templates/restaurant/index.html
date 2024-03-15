@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load restaurant_tags %}
+{% block content %}
+<h1>{{title}}</h1>
+<ul>
+    {% for p in posts %}
+        {% if p.is_published %}
+            <li>
+                <h2>{{p.author}}</h2>
+                <p>{{p.time}}</p>
+                <p>Категория:
+                    {% for cat in cats %}
+                        {% if cat.id == p.category %}
+                            {{ cat.name }}
+                        {% endif %}
+                    {% endfor %}
+                </p>
+                <p>{{p.dish}}</p>
+                <p>{{p.review}}</p>
+                <p><a href="{% url 'post' p.id %}">Читать отзыв</a></p>
+                {% if not forloop.last %}
+                    <hr>
+                {% endif %}
+            </li>
+        {% endif %}
+    {% endfor %}
+</ul>
+{% endblock %}

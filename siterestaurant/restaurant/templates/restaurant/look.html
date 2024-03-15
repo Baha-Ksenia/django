@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load restaurant_tags %}
+{% block content %}
+<h1>{{title}}</h1>
+
+<ul id="leftchapters">
+    {% if cat_selected == 0 or cat_selected is None %}
+    <li class="selected">Все категории</li>
+    {% else %}
+    <li ><a href="{% url 'look' %}">Все категории</a></li>
+    {% endif %}
+    {% show_categories cat_selected %}
+
+</ul>
+<ul>
+    {% for p in posts %}
+        {% if p.is_published %}
+            <li>
+                <h2>{{p.author}}</h2>
+                <p>{{p.time}}</p>
+                <p>{{p.dish}}</p>
+                <p>{{p.review}}</p>
+                <p><a href="{% url 'post' p.id %}">Читать отзыв</a></p>
+                {% if not forloop.last %}
+                    <hr>
+                {% endif %}
+            </li>
+        {% endif %}
+    {% endfor %}
+</ul>
+
+{% endblock %}
