@@ -1,19 +1,49 @@
 html, body {
-	font-family: 'Arial';
+font-family: 'Geologica';
 	margin: 0;
 	padding: 0;
 	height: 100%;
 	width: 100%;
-	color: #444;
+	color: #F2F2F2;
+
 }
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
+    padding-top: 100px; 
+
 }
+nav{
+padding: 20px;
+background-color: #ffc800;
+color: #FFFFFF;
+margin-left: auto;
+
+position: fixed;
+width: 100%;
+box-shadow: 0 2px 4px 0 rgba(0,0,0,.2);
+
+}
+
+.container-nav{
+    max-width: 1200px;
+    display: flex;
+    margin: 0 auto;
+    justify-content: space-between;
+    text-align: center;
+}
+nav a{
+    color: #FFFFFF;
+    text-decoration: double;
+}
+
 h1 {
     text-align: center;
     color: #333;
+    font-size: 40px;
+    font-weight: 600;
+    margin-bottom: 50px;
 }
 
 ul {
@@ -23,10 +53,9 @@ ul {
 
 li {
     background-color: #fff;
-    margin: 10px;
+
     padding: 15px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    
 }
 
 h2 {
@@ -35,12 +64,12 @@ h2 {
 }
 
 p {
-    color: #666;
-    margin: 5px 0;
+    color: #454545;
+    /* margin: 5px 0; */
 }
 
 a {
-    color: #007bff;
+    color: #ffb700;
     text-decoration: none;
 }
 
@@ -48,7 +77,79 @@ a:hover {
     text-decoration: underline;
 }
 
-hr {
-    border: none;
-    border-top: 1px solid #eee;
+
+
+/* -----------------------------------------POST ВЫВОД ПОСТОВ----------------------------------------------- */
+.page-post{
+    padding: 100px;
+    margin: 10px;
+    background-color: #FFFFFF;
+    }
+
+.page-post h1 span{
+    font-size: 45px;
+    margin-bottom: 10px;
+    color: #ffb700;
 }
+.page-post p {
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+
+.page-post img {
+    max-width: 100%;
+    height: auto;
+    margin-top: 10px;
+}
+
+/* -----------------------------------------INDEX ВЫВОД ПОСТОВ----------------------------------------------- */
+
+.index-post p img{
+    height: 100%;
+    width: auto;
+    max-height: 192px;
+object-fit: cover;
+border-radius: 15px 0 0 15px;
+margin-right: 30px;
+overflow: hidden;
+}
+
+.index-post div{
+    padding: 15px;
+}
+
+.index-post div h2{
+    margin: 20px 0 10px 0;
+    font-weight: 400;
+    font-size: 25px;
+    
+}
+
+.index-post{
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(99, 99, 99, 0.15);
+    display:flex;
+    margin-bottom: 20px;
+}
+
+
+
+.index-content p:nth-child(2){
+    font-size: 14px;
+    color: #acacac;
+    margin-bottom: 20px;
+}
+
+.index-content p:nth-child(3){
+    font-weight: 700;
+    margin-bottom: 10px;
+    max-width: 500px;
+    max-height: 16px;
+}
+
+.index-content p:nth-child(4){
+    margin-bottom: 15px;
+}
+
+
+
