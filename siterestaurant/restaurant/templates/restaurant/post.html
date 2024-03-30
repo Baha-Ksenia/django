@@ -1,21 +1,32 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="page-post">
-<h1>{{ title }}  <span>{{ post.author }}</span></h1>
+    <h1>{{ title }} <span>{{ post.author }}</span></h1>
 
-<p>{{post.time_create}}</p>
-<p>Категория:
-    {% for cat in cats %}
-        {% if cat.id == post.category %}
-            {{ cat.name }}
-        {% endif %}
-    {% endfor %}</p>
-<p>{{post.dish}}</p>
-<p>{{post.review}}</p>
-{% if post.photo %}
+    <p>{{post.time_create|date:"d-m-Y H:i:s"}}</p>
+    <p>Категория: {{post.cat}}</p>
+    <p>{{post.dish}}</p>
+
+    <!-- Теги -->
+    {% with post.tags.all as tags %}
+    {% if tags %}
+    <ul class="tags-list">
+        <li>Теги:</li>
+        {% for t in tags %}
+        <li><a
+                href="{{t.get_absolute_url}}">{{t.tag}}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+
+
+    <p>{{post.review}}</p>
+    {% if post.photo %}
     <p><img src="{{ post.photo.url }}"></p>
-{% else %}
+    {% else %}
     <p><img src="{% static  'restaurant/images/post.png' % }"></p>
-{% endif %}
+    {% endif %}
 </div>
 {% endblock %}

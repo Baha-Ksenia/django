@@ -53,7 +53,7 @@ ul {
 
 li {
     background-color: #fff;
-
+    color: #000;
     padding: 15px;
     
 }
@@ -151,5 +151,8 @@ overflow: hidden;
     margin-bottom: 15px;
 }
 
+/*/////////////////////////////////////////*/
 
-
+.tags-list li{
+    display: inline;
+}
