@@ -3,11 +3,7 @@
 <div class="page-post">
     <h1>{{ title }} <span>{{ post.author }}</span></h1>
 
-    <p>{{post.time_create|date:"d-m-Y H:i:s"}}</p>
-    <p>Категория: {{post.cat}}</p>
-    <p>{{post.dish}}</p>
-
-    <!-- Теги -->
+<!-- Теги -->
     {% with post.tags.all as tags %}
     {% if tags %}
     <ul class="tags-list">
@@ -20,13 +16,15 @@
     {% endif %}
     {% endwith %}
 
-
-
+    <p>{{post.time_create|date:"d-m-Y H:i:s"}}</p>
+    <p>Категория: {{post.cat}}</p>
+    <p>{{post.dish}}</p>
     <p>{{post.review}}</p>
-    {% if post.photo %}
-    <p><img src="{{ post.photo.url }}"></p>
-    {% else %}
     <p><img src="{% static  'restaurant/images/post.png' % }"></p>
-    {% endif %}
+<!--    {% if post.photo %}-->
+<!--    <p><img src="{{ post.photo.url }}"></p>-->
+<!--    {% else %}-->
+<!--    <p><img src="{% static  'restaurant/images/post.png' % }"></p>-->
+<!--    {% endif %}-->
 </div>
 {% endblock %}
