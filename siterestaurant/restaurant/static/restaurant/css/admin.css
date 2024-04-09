@@ -1,0 +1,17 @@
+#header {
+ background: #ffb700;
+
+}
+.module caption {
+    background: #ffb700;
+}
+div.breadcrumbs {
+ background: #ffd774;
+}
+.module h2, .module caption, .inline-group h2 {
+ background: #ffb700;
+}
+
+input {
+    background: #ffb700;
+}
