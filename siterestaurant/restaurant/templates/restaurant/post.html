@@ -7,7 +7,7 @@
     {% with post.tags.all as tags %}
     {% if tags %}
     <ul class="tags-list">
-        <li>Теги:</li>
+        <li class="tags-list-li">Теги:</li>
         {% for t in tags %}
         <li><a
                 href="{{t.get_absolute_url}}">{{t.tag}}</a></li>
@@ -17,14 +17,14 @@
     {% endwith %}
 
     <p>{{post.time_create|date:"d-m-Y H:i:s"}}</p>
-    <p>Категория: {{post.cat}}</p>
-    <p>{{post.dish}}</p>
+    <p class="post_cat">Категория: {{post.cat}}</p>
+    <p class="post_bludo">Блюдо: <span>{{post.dish}}</span></p>
     <p>{{post.review}}</p>
-    <p><img src="{% static  'restaurant/images/post.png' % }"></p>
-<!--    {% if post.photo %}-->
-<!--    <p><img src="{{ post.photo.url }}"></p>-->
-<!--    {% else %}-->
-<!--    <p><img src="{% static  'restaurant/images/post.png' % }"></p>-->
-<!--    {% endif %}-->
+    {% if post.photo %}
+        <img class="img_post" src="{{post.photo.url}}"></p>
+    {% else %}
+        <p><img src="{% static  'restaurant/images/post.png' % }"></p>
+    {% endif %}
+
 </div>
 {% endblock %}

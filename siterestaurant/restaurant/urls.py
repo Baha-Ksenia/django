@@ -6,7 +6,7 @@ from restaurant.templatetags import restaurant_tags
 
 urlpatterns = [
     path('', views.index, name='home'),
-    path('add/', views.add, name='add'),
+    path('add/', views.addPoll, name='addPoll'),
     path('about/', views.about, name='about'),
     path('look/', views.look, name='look'),
     path('login/', views.login, name='login'),

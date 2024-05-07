@@ -1,8 +1,11 @@
+import uuid
+
 from django.http import HttpResponse, HttpResponseNotFound, Http404, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 
-from restaurant.models import Restaurant, Category, TagPost
+from restaurant.forms import AddPollForm, UploadFileForm
+from restaurant.models import Restaurant, Category, TagPost, UploadFiles
 
 menu = [{'title': "Главная", 'url_name': ''},
         {'title': "О сайте", 'url_name': 'about'},
@@ -38,12 +41,40 @@ def index(request):
                   context=data)
 
 
+def handle_uploaded_file(f):
+    name = f.name
+    ext = ''
+    if '.' in name:
+        ext = name[name.rindex('.'):]
+        name = name[:name.rindex('.')]
+    suffix = str(uuid.uuid4())
+    with open(f"uploads/{name}_{suffix}{ext}", "wb+") as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+
+
 def about(request):
-    return render(request, 'restaurant/about.html', {'title': 'О сайте', 'menu': menu})
+    if request.method == "POST":
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            handle_uploaded_file(form.cleaned_data['file'])
+    else:
+        form = UploadFileForm()
+    return render(request, 'restaurant/about.html',
+                  {'title': 'О сайте', 'menu': menu, 'form': form})
 
 
-def add(request):
-    return render(request, 'restaurant/add.html', {'title': 'Добавление отзыва', 'menu': menu})
+def addPoll(request):
+    if request.method == 'POST':
+        form = AddPollForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    else:
+        form = AddPollForm()
+
+    return render(request, 'restaurant/addPoll.html',
+                  {'menu': menu, 'title': 'Добавление отзыва', 'form': form})
 
 
 def look(request):

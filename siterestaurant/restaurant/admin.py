@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.core.checks import messages
+from django.utils.safestring import mark_safe
 
 # Register your models here.
 from .models import Restaurant, Category
@@ -20,7 +21,7 @@ class PublicFilter(admin.SimpleListFilter):
 
 
 class RestaurantAdmin(admin.ModelAdmin):
-    list_display = ('author', 'time_create', 'is_published', 'cat', 'brief_info')
+    list_display = ('author', 'time_create', 'is_published', 'post_photo',  'cat')
     list_display_links = ('author',)
     list_editable = ('is_published', 'cat')
     ordering = ['time_create', 'author']
@@ -28,15 +29,22 @@ class RestaurantAdmin(admin.ModelAdmin):
     actions = ['set_published', 'set_draft']
     search_fields = ['author', 'cat__name']
     list_filter = [PublicFilter, 'cat', 'is_published']
-    fields = ['author', 'review', 'slug', 'cat', 'dish', 'tags']
-    readonly_fields = ['slug']
+    fields = ['author', 'review', 'photo', 'slug', 'cat', 'dish', 'tags']
+    # readonly_fields = ['slug']
     filter_horizontal = ['tags']
     # exclude = ['tags', 'is_published', 'time_create']
     # prepopulated_fields = {"slug": ("dish",)}
+    readonly_fields = ['post_photo']
 
-    @admin.display(description="Краткое описание", ordering='content')
-    def brief_info(self, restaurant: Restaurant):
-        return f"Описание {len(restaurant.review)} символов."
+    @admin.display(description="Изображение")
+    def post_photo(self, restaurant: Restaurant):
+        if restaurant.photo:
+            return mark_safe(f"<img src = '{restaurant.photo.url}' width = 50 > ")
+        return "Без фото"
+
+    # @admin.display(description="Краткое описание", ordering='content')
+    # def brief_info(self, restaurant: Restaurant):
+    #     return f"Описание {len(restaurant.review)} символов."
 
     @admin.action(description="Опубликовать выбранные записи")
     def set_published(self, request, queryset):

@@ -34,7 +34,9 @@ class Restaurant(models.Model):
     author = models.TextField(blank=True, verbose_name="Автор")
     dish = models.CharField(max_length=100, verbose_name="Блюдо")
     # category = models.IntegerField(blank=True, verbose_name="Категории")
-    photo = models.ImageField(upload_to='images/', blank=True, verbose_name="Фото")
+    # photo = models.ImageField(upload_to='images/', blank=True, verbose_name="Фото")
+    photo = models.ImageField(upload_to="photos/%Y/%m/%d/", default=None, blank=True,
+                              null=True, verbose_name="Фото")
     tags = models.ManyToManyField('TagPost', blank=True, related_name='tags', verbose_name="Теги")
     contact = models.OneToOneField('Contact', on_delete=models.SET_NULL,
                                    null=True, blank=True, related_name='restaurant', verbose_name="Контакты")
@@ -97,3 +99,7 @@ class Contact(models.Model):
 
     def __str__(self):
         return self.mail
+
+
+class UploadFiles(models.Model):
+    file = models.FileField(upload_to='uploads_model')
