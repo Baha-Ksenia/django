@@ -6,9 +6,9 @@
     <div class="index-post">
         {% if p.photo %}
         <img class="img-article-left" src="{{p.photo.url}}"></p>
-    {% else %}
+        {% else %}
         <p><img src="{% static  'restaurant/images/post.png' % }"></p>
-    {% endif %}
+        {% endif %}
         <div class="index-content">
             <h2>{{p.author}}</h2>
             <p>{{p.time_create|date:"d-m-Y H:i:s"}}</p>
@@ -19,5 +19,23 @@
     </div>
     {% endfor %}
 </ul>
+{% if page_obj.has_other_pages %}
+
+<nav class="list-pages">
+    <ul>
+        {% for p in paginator.page_range %}
+        {% if page_obj.number == p %}
+        <li class="page-num page-num-selected">{{ p }}
+        </li>
+        {% elif p >= page_obj.number|add:-2 and p <= page_obj.number|add:2 %}
+        <li class="page-num">
+            <a href="?page={{ p }}">{{ p }}</a>
+        </li>
+        {% endif %}
+        {% endfor %}
+    </ul>
+</nav>
+
+{% endif %}
 {% endblock %}
 
