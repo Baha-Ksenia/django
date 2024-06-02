@@ -14,6 +14,48 @@ font-family: 'Geologica';
     padding-top: 100px; 
 
 }
+.nav-big {
+    padding: 20px;
+    background-color: #ffc800;
+    color: #FFFFFF;
+    margin-left: auto;
+    position: fixed;
+    width: 100%;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,.2);
+
+
+}
+
+.nav-big ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.tags-and-edit{
+    display: flex;
+    justify-content: space-between;
+}
+
+.nav-big li {
+    display: inline-block;
+    margin-right: 20px; /* Расстояние между элементами */
+     background-color: #ffc800;
+     color: white;
+}
+
+.nav-big a {
+   color: white; /*  Белый текст */
+    text-decoration: none;
+}
+
+.container-nav {
+    max-width: 1200px;
+    display: flex;
+    margin: 0 auto;
+    justify-content: space-between;
+    text-align: center;
+}
+/*
 .nav-big{
 padding: 20px;
 background-color: #ffc800;
@@ -38,6 +80,7 @@ nav a{
     color: #FFFFFF;
     text-decoration: double;
 }
+*/
 
 h1 {
     text-align: center;
@@ -248,14 +291,18 @@ overflow: hidden;
     margin-bottom: 20px;
 }
 
-.poll-form input[type="text"] {
-    /* width: 280px; */
+.poll-form input[type="text"],
+.poll-form input[type="password"],
+.poll-form input[type="email"],
+.poll-form input[type="number"],
+.poll-form input[type="tel"],
+.poll-form input[type="url"] {
     width: 100%;
     padding: 5px;
-    /* margin-bottom: 30px; */
     margin-top: 10px;
     border-radius: 10px;
 }
+
 .poll-form textarea{
     background-color: #ffffff;
     border-radius: 5px solid #ffb700;
@@ -267,6 +314,7 @@ overflow: hidden;
     padding: 10px 20px;
     border-radius: 10px;
     cursor: pointer;
+    margin-right: 20px;
 }
 
 .submit-button:hover {
@@ -311,3 +359,66 @@ overflow: hidden;
 .list-pages .page-num-selected:hover {
 	box-shadow: none;
 }
+
+
+
+.profile-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .profile-photo {
+        margin-right: 20px;
+    }
+
+    .photo-circle {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .profile-info {
+        flex-grow: 1;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-label {
+        font-weight: bold;
+    }
+
+    .form-error {
+        color: red;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-link {
+        background: none;
+        border: none;
+        color: #007bff;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    .btn-link:hover {
+        color: #0056b3;
+    }

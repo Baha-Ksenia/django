@@ -1,5 +1,8 @@
 import uuid
 
+from django.conf import settings
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.paginator import Paginator
 from django.http import HttpResponse, HttpResponseNotFound, Http404, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
@@ -29,102 +32,36 @@ class MyClass:
 
 
 class RestaurantHome(DataMixin, ListView):
-
     model = Restaurant
     context_object_name = 'posts'
     template_name = 'restaurant/index.html'
 
-    #
-    # extra_context = {
-    #     'title': 'Главная страница',
-    #     'menu': menu,
-    #     # 'posts': Restaurant.published.all().select_related('cat'),
-    #     'cat_selected': 0,
-    # }
-
     def get_context_data(self, *, object_list=None, **kwargs):
-        return self.get_mixin_context(super().get_context_data(**kwargs), title='Главная страница', cat_selected=0, )
-
-    # def get_context_data(self, *, object_list=None, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context['title'] = 'Главная страница'
-    #     context['menu'] = menu
-    #     context['cat_selected'] = 0
-    #     return context
-
-    # def get_context_data(self, *, object_list=None, **kwargs):
-    #     # return self.get_mixin_context(super().get_context_data(**kwargs), title='Главная страница', menu=menu, cat_selected=0, )
-    #     context = super().get_context_data(**kwargs)
-    #     return self.get_mixin_context(context, title='Главная страница', menu=menu, cat_selected=0)
+        context = super().get_context_data(**kwargs)
+        context = self.get_mixin_context(context, title='Главная страница', cat_selected=0)
+        context['default_poll_image'] = settings.DEFAULT_POLL_IMAGE
+        return context
 
     def get_queryset(self):
         return Restaurant.published.all().select_related('cat')
-    # template_name = 'restaurant/index.html'
-    # extra_context = {
-    #     'title': 'Главная страница',
-    #     'menu': menu,
-    #     'posts':
-    #         Restaurant.published.all().select_related('cat'),
-    #     'cat_selected': 0,
-    # }
 
 
 class RestaurantCategory(DataMixin, ListView):
     template_name = 'restaurant/index.html'
     context_object_name = 'posts'
     allow_empty = False
+    default_poll_image = settings.DEFAULT_POLL_IMAGE,
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         cat = context['posts'][0].cat
-        return self.get_mixin_context(context, title='Категория - ' + cat.name, cat_selected=cat.id, )
-
-    # def get_context_data(self, *, object_list=None, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     cat = context['posts'][0].cat
-    #     context['title'] = 'Категория - ' + cat.name
-    #     context['menu'] = menu
-    #     context['cat_selected'] = cat.id
-    #     return context
+        context = self.get_mixin_context(context, title='Категория - ' + cat.name, cat_selected=cat.id)
+        context['default_poll_image'] = settings.DEFAULT_POLL_IMAGE
+        return context
 
     def get_queryset(self):
         return (Restaurant.published.filter(cat__slug=self.kwargs['cat_slug']).
                 select_related('cat'))
-
-
-class TagPostList(DataMixin, ListView):
-    template_name = 'restaurant/index.html'
-    context_object_name = 'posts'
-    allow_empty = False
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        tag = TagPost.objects.get(slug=self.kwargs['tag_slug'])
-        return self.get_mixin_context(context, title='Тег: ' + tag.tag)
-
-    # def get_context_data(self, *, object_list=None, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     tag = TagPost.objects.get(slug=self.kwargs['tag_slug'])
-    #     context['title'] = 'Тег: ' + tag.tag
-    #     context['menu'] = menu
-    #     context['cat_selected'] = None
-    #     return context
-
-    def get_queryset(self):
-        return (Restaurant.published.filter(tags__slug=self.kwargs['tag_slug']).
-                select_related('cat'))
-
-
-def index(request):
-    posts = Restaurant.published.all()
-    data = {
-        'title': 'Главная страница',
-        # 'menu': menu,
-        'posts': posts,
-        'cat_selected': 0,
-    }
-    return render(request, 'restaurant/index.html',
-                  context=data)
 
 
 def handle_uploaded_file(f):
@@ -140,79 +77,39 @@ def handle_uploaded_file(f):
 
 
 def about(request):
-    contact_list = Restaurant.published.all()
-    paginator = Paginator(contact_list, 3)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    if request.method == "POST":
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            fp = UploadFiles(file=form.cleaned_data['file'])
+            fp.save()
+    else:
+        form = UploadFileForm()
 
-    # if request.method == "POST":
-    #     form = UploadFileForm(request.POST, request.FILES)
-    #     if form.is_valid():
-    #         handle_uploaded_file(form.cleaned_data['file'])
-    # else:
-    #     form = UploadFileForm()
     return render(request, 'restaurant/about.html',
-                  {'page_obj': page_obj, 'title': 'О сайте'})
+                  {'title': 'О сайте', 'menu': menu, 'form': form})
 
 
-# class AddPoll(View):
-#     def get(self, request):
-#         form = AddPollForm()
-#         return render(request, 'restaurant/addpoll.html',
-#                       {'menu': menu, 'title': 'Добавление отзыва', 'form':
-#                           form})
-#
-#     def post(self, request):
-#         form = AddPollForm(request.POST, request.FILES)
-#
-#         if form.is_valid():
-#             form.save()
-#             return redirect('home')
-#         return render(request, 'restaurant/addpoll.html',
-#                       {'menu': menu, 'title': 'Добавление отзыва', 'form':
-#                           form})
-#
-
-# class AddPoll(FormView):
-#     form_class = AddPollForm
-#     template_name = 'restaurant/addpoll.html'
-#     success_url = reverse_lazy('home')
-#     extra_context = {
-#         'menu': menu,
-#         'title': 'Добавление статьи',
-#     }
-#
-#     def form_valid(self, form):
-#         form.save()
-#         return super().form_valid(form)
+class UpdatePage:
+    pass
 
 
-class AddPoll(DataMixin, CreateView):
+class AddPoll(LoginRequiredMixin, DataMixin, CreateView, PermissionRequiredMixin):
+    permission_required = 'restaurant.add_restaurant'
     model = Restaurant
-    # fields = ['title', 'slug', 'content',
-    #           'is_published', 'cat']
-    fields = '__all__'
-    # form_class = AddPostForm
+    form_class = AddPollForm
     template_name = 'restaurant/addpoll.html'
     success_url = reverse_lazy('home')
     title_page = 'Добавление отзыва'
 
-    # model = Restaurant
-    # # form_class = AddPollForm
-    # fields = '__all__'
-    # template_name = 'restaurant/addpoll.html'
-    # success_url = reverse_lazy('home')
-    # extra_context = {
-    #     'menu': menu,
-    #     'title': 'Добавление отзыва',
-    # }
+    def form_valid(self, form):
+        w = form.save(commit=False)
+        w.author = self.request.user
+        return super().form_valid(form)
 
 
-class UpdatePoll(UpdateView):
+class UpdatePoll(UpdateView, UpdatePage):
+    permission_required = 'restaurant.change_restaurant'
     model = Restaurant
-    # fields = ['title', 'content', 'photo',
-    #           'is_published', 'cat']
-
     fields = ['dish', 'review', 'is_published', 'cat', 'contact', 'photo']
     template_name = 'restaurant/addpoll.html'
     success_url = reverse_lazy('home')
@@ -230,60 +127,16 @@ class DeletePoll(DataMixin, DeleteView):
     }
 
 
-# class DeletePoll(DeleteView):
-#     model = Restaurant
-#     # fields = ['title', 'content', 'photo',
-#     #           'is_published', 'cat']
-#     success_url = reverse_lazy('author-list')
-#     template_name_suffix = '_confirm_delete'
-#     title_page = 'Удаление  отзыва'
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['title'] = 'Delete Author'
-#         return context
-
-
-def addPoll(request):
-    if request.method == 'POST':
-        form = AddPollForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-    else:
-        form = AddPollForm()
-
-    return render(request, 'restaurant/addpoll.html',
-                  {'menu': menu, 'title': 'Добавление отзыва', 'form': form})
-
-
+@login_required
 def look(request):
-    # contact_list = Restaurant.published.all()
-    # paginator = Paginator(contact_list, 3)
-    # page_number = request.GET.get('page')
-    # page_obj = paginator.get_page(page_number)
     data = {
         'title': 'Отзывы',
-        # 'menu': menu,
         'posts': Restaurant.published.all(),
         'cats': cats_db,
-        # 'page_obj': page_obj,
-        # 'cat_selected': 0,  # не обязательная строчка
+        'default_poll_image': settings.DEFAULT_POLL_IMAGE,
     }
-    return render(request, 'restaurant/look.html',  context=data)
+    return render(request, 'restaurant/look.html', context=data)
 
-
-def show_category(request, cat_slug):
-    category = get_object_or_404(Category, slug=cat_slug)
-    posts = Restaurant.published.filter(cat_id=category.pk)
-    data = {
-        'title': f'Рубрика: {category.name}',
-        # 'menu': menu,
-        'posts': posts,
-        'cat_selected': category.pk,
-    }
-    return render(request, 'restaurant/cats.html',
-                  context=data)
 
 
 def show_tag_postlist(request, tag_slug):
@@ -294,6 +147,7 @@ def show_tag_postlist(request, tag_slug):
         'menu': menu,
         'posts': posts,
         'cat_selected': None,
+        'default_poll_image': settings.DEFAULT_POLL_IMAGE,
     }
     return render(request, 'restaurant/index.html', context=data)
 
@@ -302,37 +156,20 @@ def login(request):
     return HttpResponse("Авторизация")
 
 
-def show_post(request, post_slug):
-    post = get_object_or_404(Restaurant, slug=post_slug)
-
-    data = {
-        'title': 'Отзыв от:',
-        # 'menu': menu,
-        'post': post,
-        'cats': cats_db,
-        # 'cat_selected': 1,
-    }
-    return render(request, 'restaurant/post.html',
-                  context=data)
-
-
 class ShowPost(DataMixin, DetailView):
     model = Restaurant
     slug_url_kwarg = 'post_slug'
     context_object_name = 'post'
     template_name = 'restaurant/post.html'
+    extra_context = {
+        'default_poll_image': settings.DEFAULT_POLL_IMAGE,
+    }
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        return self.get_mixin_context(context, title='Отзыв от: ')
-
-    # title = context['post']
-
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context['title'] = context['post']
-    #     context['menu'] = menu
-    #     return context
+        context = self.get_mixin_context(context, title='Отзыв от:')
+        context['default_poll_image'] = settings.DEFAULT_POLL_IMAGE
+        return context
 
     def get_object(self, queryset=None):
         return get_object_or_404(Restaurant.published,

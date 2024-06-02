@@ -16,11 +16,15 @@
     {% if p.category == cat_selected %}
     <div class="index-post">
         <p>
-            <img src="../../static/restaurant/images/post.png">
+             {% if p.photo %}
+        <img class="img-article-left" src="{{p.photo.url}}"></p>
+        {% else %}
+        <p><img class="img-article-left" src="{{ default_poll_image }}"></p>
+        {% endif %}
         </p>
 
         <div class="index-content">
-            <h2>{{p.author}}</h2>
+             <h2>{{ p.author.first_name }} {{ p.author.last_name }}</h2>
             <p>{{p.time_create|date:"d-m-Y H:i:s"}}</p>
             <p>{{p.dish}}</p>
             <p>{{p.review|truncatewords:50}}</p>

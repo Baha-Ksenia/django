@@ -7,10 +7,10 @@
         {% if p.photo %}
         <img class="img-article-left" src="{{p.photo.url}}"></p>
         {% else %}
-        <p><img src="{% static  'restaurant/images/post.png' % }"></p>
+        <p><img class="img-article-left" src="{{default_poll_image}}"></p>
         {% endif %}
         <div class="index-content">
-            <h2>{{p.author}}</h2>
+            <h2>{{ p.author.first_name }} {{ p.author.last_name }}</h2>
             <p>{{p.time_create|date:"d-m-Y H:i:s"}}</p>
             <p>{{p.dish}}</p>
             <p>{{p.review|truncatewords:50}}</p>
@@ -19,10 +19,18 @@
     </div>
     {% endfor %}
 </ul>
-{% if page_obj.has_other_pages %}
+{% endblock %}
 
+{% block navigation %}
+{% if page_obj.has_other_pages %}
 <nav class="list-pages">
     <ul>
+        {% if page_obj.has_previous %}
+        <li class="page-num">
+            <a href="?page={{page_obj.previous_page_number }}">&lt;</a>
+        </li>
+        {% endif %}
+
         {% for p in paginator.page_range %}
         {% if page_obj.number == p %}
         <li class="page-num page-num-selected">{{ p }}
@@ -33,9 +41,14 @@
         </li>
         {% endif %}
         {% endfor %}
+        {% if page_obj.has_next %}
+        <li class="page-num">
+            <a href="?page={{ page_obj.next_page_number}}">&gt;</a>
+        </li>
+        {% endif %}
+
     </ul>
 </nav>
-
 {% endif %}
-{% endblock %}
 
+{% endblock %}

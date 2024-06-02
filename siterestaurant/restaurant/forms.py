@@ -31,9 +31,9 @@ class AddPollForm(forms.ModelForm):
         model = Restaurant
         # fields = '__all__'
         fields = ['dish', 'review', 'is_published',
-                  'cat', 'author', 'tags', 'contact', 'photo']
+                  'cat',  'tags', 'contact', 'photo']
         widgets = {
-            'author': forms.TextInput(attrs={'class': 'form-input'}),
+            # 'author': forms.TextInput(attrs={'class': 'form-input'}),
             'review': forms.Textarea(attrs={'cols': 60, 'rows': 10}),
         }
 

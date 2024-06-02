@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
@@ -31,7 +32,11 @@ class Restaurant(models.Model):
     time_create = models.DateTimeField(auto_now_add=True, verbose_name="Время публикации")
     is_published = models.BooleanField(choices=tuple(map(lambda x: (bool(x[0]), x[1]), Status.choices)),
                                        default=Status.DRAFT, verbose_name="Статус")
-    author = models.TextField(blank=True, verbose_name="Автор")
+    # author = models.TextField(blank=True, verbose_name="Автор")
+    author = models.ForeignKey(get_user_model(),
+                               on_delete=models.SET_NULL, related_name='posts',
+                               null=True, default=None)
+
     dish = models.CharField(max_length=100, verbose_name="Блюдо")
     # category = models.IntegerField(blank=True, verbose_name="Категории")
     # photo = models.ImageField(upload_to='images/', blank=True, verbose_name="Фото")

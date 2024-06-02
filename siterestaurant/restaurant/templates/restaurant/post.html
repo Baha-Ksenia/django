@@ -1,30 +1,34 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="page-post">
-    <h1>{{ title }} <span>{{ post.author }}</span></h1>
+    <h1>{{ title }} <span> {{ post.author.first_name }} {{ post.author.last_name }}</span></h1>
 
-<!-- Теги -->
-    {% with post.tags.all as tags %}
-    {% if tags %}
-    <ul class="tags-list">
-        <li class="tags-list-li">Теги:</li>
-        {% for t in tags %}
-        <li><a
-                href="{{t.get_absolute_url}}">{{t.tag}}</a></li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
-
+<div class="tags-and-edit">
+        {% with post.tags.all as tags %}
+        {% if tags %}
+        <ul class="tags-list">
+            <li class="tags-list-li">Теги:</li>
+            {% for t in tags %}
+            <li><a href="{{ t.get_absolute_url }}">{{ t.tag }}</a></li>
+            {% endfor %}
+        </ul>
+    <ul>{% endif %}
+        {% endwith %}
+        {% if perms.restaurant.change_restaurant %}
+        <a class="submit-button"  href="{% url 'edit_page' post.slug %}">Редактировать</a>
+        {% endif %}</ul>
+    </div>
     <p>{{post.time_create|date:"d-m-Y H:i:s"}}</p>
     <p class="post_cat">Категория: {{post.cat}}</p>
     <p class="post_bludo">Блюдо: <span>{{post.dish}}</span></p>
     <p>{{post.review}}</p>
+
     {% if post.photo %}
         <img class="img_post" src="{{post.photo.url}}"></p>
     {% else %}
-        <p><img src="{% static  'restaurant/images/post.png' % }"></p>
+        <p><img class="img_post" src="{{ default_poll_image }}"></p>
     {% endif %}
 
 </div>
+
 {% endblock %}
